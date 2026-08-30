@@ -28,6 +28,7 @@ urlpatterns = [
     path('api/auth/login/', TokenObtainPairView.as_view(), name='login'),
     path('api/users/me/', MeView.as_view(), name='me'),
     path('api/wallet/', include('wallets.urls')),
+    path('api/transactions/', include('transactions.urls')),
 ]
 
 
