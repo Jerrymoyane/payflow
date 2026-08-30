@@ -6,8 +6,10 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import permissions, status
 from django.db import transaction
-from .serializers import AirtimeSerializer
+from .serializers import AirtimeSerializer, DataSerializer
 from transactions.models import Transaction
+
+
 
 
 class AirtimePurchaseView(APIView):
@@ -39,6 +41,49 @@ class AirtimePurchaseView(APIView):
                 amount=amount,
                 status='SUCCESS',
                 description=f'Airtime purchase - {network} - {phone_number}'
+            )
+
+        return Response({
+            'reference': txn.reference,
+            'amount': str(txn.amount),
+            'network': network,
+            'phone_number': phone_number,
+            'status': txn.status,
+            'new_balance': str(wallet.balance)
+        })
+        
+        
+        
+        
+class DataPurchaseView(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+
+    def post(self, request):
+        serializer = DataSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        amount = serializer.validated_data['amount']
+        phone_number = serializer.validated_data['phone_number']
+        network = serializer.validated_data['network']
+
+        wallet = request.user.wallet
+
+        if wallet.balance < amount:
+            return Response(
+                {'detail': 'Insufficient balance.'},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        with transaction.atomic():
+            wallet.balance -= amount
+            wallet.save()
+
+            txn = Transaction.objects.create(
+                user=request.user,
+                wallet=wallet,
+                type='DATA',
+                amount=amount,
+                status='SUCCESS',
+                description=f'Data purchase - {network} - {phone_number}'
             )
 
         return Response({
