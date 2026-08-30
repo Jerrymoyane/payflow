@@ -16,3 +16,11 @@ class DataSerializer(serializers.Serializer):
     phone_number = serializers.CharField(max_length=15)
     network = serializers.ChoiceField(choices=NETWORK_CHOICES)
     amount = serializers.DecimalField(max_digits=12, decimal_places=2, min_value=Decimal('0.01'))
+    
+    
+class ElectricitySerializer(serializers.Serializer):
+    PROVIDER_CHOICES = ['Eskom', 'City Power', 'Ekurhuleni', 'Tshwane']
+
+    meter_number = serializers.CharField(max_length=20)
+    provider = serializers.ChoiceField(choices=PROVIDER_CHOICES)
+    amount = serializers.DecimalField(max_digits=12, decimal_places=2, min_value=Decimal('0.01'))
