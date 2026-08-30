@@ -29,6 +29,7 @@ urlpatterns = [
     path('api/users/me/', MeView.as_view(), name='me'),
     path('api/wallet/', include('wallets.urls')),
     path('api/transactions/', include('transactions.urls')),
+    path('api/payments/', include('payments.urls')),
 ]
 
 
