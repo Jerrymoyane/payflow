@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}PayFlow{% endblock %}</title>
+
+    <!-- Django loads our own CSS file from the static folder -->
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<body>
+
+    <!-- Shared navigation bar that shown on every page -->
+    <nav class="navbar">
+    <div class="navbar-container">
+
+        <a href="{% url 'home' %}" class="navbar-brand">
+            PayFlow
+        </a>
+
+        <div class="navbar-links">
+            <a href="#features">Features</a>
+            <a href="#how-it-works">How it works</a>
+        </div>
+
+        <div class="navbar-actions">
+            <a href="{% url 'login' %}" class="btn btn-outline">Login</a>
+            <a href="{% url 'register' %}" class="btn btn-primary">Get Started</a>
+        </div>
+
+    </div>
+</nav>
+
+    <!-- Django inserts each page's specific content here.
+         Every page that extends base.html fills in this block. -->
+    <main class="container">
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- Our own JavaScript file, loaded at the bottom so the page renders first -->
+    <script src="{% static 'js/script.js' %}"></script>
+</body>
+</html>

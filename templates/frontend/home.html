@@ -1,0 +1,30 @@
+<!-- extends tells Django: "start with base.html's layout, then fill in the blocks below" -->
+{% extends "frontend/base.html" %}
+
+{% block title %}PayFlow — Simulated Digital Payments{% endblock %}
+
+{% block content %}
+<section class="hero">
+    <h1>Simple, simulated digital payments.</h1>
+    <p>Register, top up your wallet, and pay for airtime, data and electricity — all in one place.</p>
+    <div class="hero-actions">
+        <a href="{% url 'register' %}" class="btn btn-primary btn-lg">Get Started</a>
+        <a href="{% url 'login' %}" class="btn btn-outline btn-lg">Login</a>
+    </div>
+</section>
+
+<section class="features">
+    <div class="feature-card">
+        <h3>Digital Wallet</h3>
+        <p>Add simulated funds and track your balance in real time.</p>
+    </div>
+    <div class="feature-card">
+        <h3>Instant Payments</h3>
+        <p>Buy airtime, mobile data, and pay electricity bills.</p>
+    </div>
+    <div class="feature-card">
+        <h3>Full History</h3>
+        <p>Every transaction is recorded with a unique reference.</p>
+    </div>
+</section>
+{% endblock %}

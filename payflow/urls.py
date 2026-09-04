@@ -22,6 +22,7 @@ from users.views import MeView
 
 
 
+
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/auth/', include('users.urls')),
@@ -30,6 +31,8 @@ urlpatterns = [
     path('api/wallet/', include('wallets.urls')),
     path('api/transactions/', include('transactions.urls')),
     path('api/payments/', include('payments.urls')),
+    path('', include('frontend.urls')),
+    
 ]
 
 

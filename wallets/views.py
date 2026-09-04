@@ -49,3 +49,39 @@ class DepositView(APIView):
             'status': txn.status,
             'new_balance': str(wallet.balance)
         })
+
+class WithdrawView(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+
+    def post(self, request):
+        serializer = DepositSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        amount = serializer.validated_data['amount']
+
+        wallet = request.user.wallet
+
+        if wallet.balance < amount:
+            return Response(
+                {'detail': 'Insufficient balance.'},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        with transaction.atomic():
+            wallet.balance -= amount
+            wallet.save()
+
+            txn = Transaction.objects.create(
+                user=request.user,
+                wallet=wallet,
+                type='WITHDRAWAL',
+                amount=amount,
+                status='SUCCESS',
+                description='Simulated withdrawal'
+            )
+
+        return Response({
+            'reference': txn.reference,
+            'amount': str(txn.amount),
+            'status': txn.status,
+            'new_balance': str(wallet.balance)
+        })
