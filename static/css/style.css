@@ -1,3 +1,51 @@
+/* ============================
+   DESIGN TOKENS
+   Every color, spacing, and font value used anywhere
+   in the site should come from here — never hardcode
+   a new value directly in a component's styles.
+   ============================ */
+:root {
+    /* Spacing scale — always pick from this list */
+    --space-1: 4px;
+    --space-2: 8px;
+    --space-3: 16px;
+    --space-4: 24px;
+    --space-5: 32px;
+    --space-6: 48px;
+    --space-7: 64px;
+    --space-8: 96px;
+
+    /* Colors */
+    --color-navy: #1a1a2e;
+    --color-indigo: #4f46e5;
+    --color-indigo-dark: #4338ca;
+    --color-bg: #f7f8fa;
+    --color-text: #1a1a2e;
+    --color-text-muted: #555;
+    --color-white: #ffffff;
+    --color-border: #e2e2e8;
+
+    /* Typography */
+    --font-body: -apple-system, "Segoe UI", Roboto, sans-serif;
+    --font-size-sm: 0.9rem;
+    --font-size-base: 1rem;
+    --font-size-lg: 1.1rem;
+    --font-size-xl: 1.5rem;
+    --font-size-hero: 2.5rem;
+    --font-size-hero-mobile: 1.75rem;
+
+    /* Shared values */
+    --radius: 6px;
+    --max-width: 1100px;
+}
+
+
+
+
+
+
+
+
 /* Basic reset so browsers render consistently */
 * {
     margin: 0;
@@ -6,15 +54,15 @@
 }
 
 body {
-    font-family: -apple-system, "Segoe UI", Roboto, sans-serif;
-    background-color: #f7f8fa;
-    color: #1a1a2e;
+    font-family: var(--font-body);
+    background-color: var(--color-bg);
+    color: var(--color-text);
     line-height: 1.5;
 }
 
 /* Navbar */
 .navbar {
-    background-color: #1a1a2e;
+    background-color: var(--color-navy);
     padding: 1rem 0;
 }
 
@@ -132,3 +180,106 @@ body {
     margin-bottom: 0.5rem;
     color: #4f46e5;
 }
+
+
+
+
+/* Auth forms (login/register) */
+.auth-card {
+    max-width: 420px;
+    margin: 3rem auto;
+    background: var(--color-white);
+    padding: var(--space-5);
+    border-radius: 10px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+}
+
+.auth-card h2 {
+    margin-bottom: var(--space-4);
+}
+
+.form-group {
+    margin-bottom: var(--space-3);
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: var(--space-1);
+    font-size: var(--font-size-sm);
+    font-weight: 600;
+}
+
+.form-group input {
+    width: 100%;
+    padding: var(--space-2);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius);
+    font-size: var(--font-size-base);
+}
+
+.form-group input:focus {
+    outline: none;
+    border-color: var(--color-indigo);
+}
+
+.form-error {
+    color: #dc2626;
+    font-size: var(--font-size-sm);
+    margin-bottom: var(--space-3);
+    min-height: 1.2em;
+}
+
+.btn-block {
+    width: 100%;
+}
+
+.auth-switch {
+    margin-top: var(--space-3);
+    text-align: center;
+    font-size: var(--font-size-sm);
+}
+
+
+.dashboard-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: var(--space-4);
+    margin-bottom: var(--space-5);
+}
+
+.card {
+    background: var(--color-white);
+    padding: var(--space-4);
+    border-radius: 10px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+    margin-bottom: var(--space-4);
+}
+
+.balance {
+    font-size: var(--font-size-xl);
+    font-weight: 700;
+    color: var(--color-indigo);
+}
+
+.transactions-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.transactions-table th,
+.transactions-table td {
+    text-align: left;
+    padding: var(--space-2);
+    border-bottom: 1px solid var(--color-border);
+}
+
+.badge {
+    padding: 2px 10px;
+    border-radius: 999px;
+    font-size: var(--font-size-sm);
+    font-weight: 600;
+}
+
+.badge-success { background: #dcfce7; color: #166534; }
+.badge-failed { background: #fee2e2; color: #991b1b; }
+.badge-pending { background: #fef9c3; color: #854d0e; }
