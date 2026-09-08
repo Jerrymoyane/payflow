@@ -31,7 +31,7 @@ class Transaction(models.Model):
     ]
 
     reference = models.CharField(max_length=20, unique=True, default=generate_reference)
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='transactions')
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, blank=True, related_name='transactions')
     wallet = models.ForeignKey('wallets.Wallet', on_delete=models.CASCADE, related_name='transactions')
     type = models.CharField(max_length=20, choices=TYPE_CHOICES)
     amount = models.DecimalField(max_digits=12, decimal_places=2)
