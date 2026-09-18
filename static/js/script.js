@@ -162,3 +162,79 @@ if (walletBalanceEl) {  // only run this code if we're actually on the dashboard
             });
     }
 }
+
+
+
+// ---------- WALLET PAGE ----------
+const depositForm = document.getElementById('deposit-form');
+if (depositForm) {  // only runs on the wallet page
+
+    const token = localStorage.getItem('access_token');
+    if (!token) {
+        window.location.href = '/login/';
+    } else {
+
+        const balanceEl = document.getElementById('wallet-page-balance');
+
+        // Reusable function to fetch and display the current balance
+        async function loadBalance() {
+            const response = await fetch('/api/wallet/', {
+                headers: { 'Authorization': 'Bearer ' + token }
+            });
+            const wallet = await response.json();
+            balanceEl.textContent = wallet.currency + ' ' + wallet.balance;
+        }
+
+        // Shared function for both deposit and withdraw, since they
+        // work identically apart from the URL they call
+        async function submitTransaction(url, amountInputId, messageBoxId) {
+            const messageBox = document.getElementById(messageBoxId);
+            const amount = document.getElementById(amountInputId).value;
+            messageBox.textContent = '';
+            messageBox.className = 'form-message';
+
+            try {
+                const response = await fetch(url, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': 'Bearer ' + token
+                    },
+                    body: JSON.stringify({ amount: amount })
+                });
+
+                const result = await response.json();
+
+                if (!response.ok) {
+                    messageBox.textContent = result.detail || 'Transaction failed.';
+                    messageBox.classList.add('form-message-error');
+                    return;
+                }
+
+                messageBox.textContent = 'Success! Reference: ' + result.reference;
+                messageBox.classList.add('form-message-success');
+
+                document.getElementById(amountInputId).value = '';  // clear the input
+                loadBalance();  // refresh the displayed balance immediately
+
+            } catch (err) {
+                messageBox.textContent = 'Something went wrong.';
+                messageBox.classList.add('form-message-error');
+            }
+        }
+
+        // Load the balance as soon as the page opens
+        loadBalance();
+
+        depositForm.addEventListener('submit', function (e) {
+            e.preventDefault();
+            submitTransaction('/api/wallet/deposit/', 'deposit-amount', 'deposit-message');
+        });
+
+        const withdrawForm = document.getElementById('withdraw-form');
+        withdrawForm.addEventListener('submit', function (e) {
+            e.preventDefault();
+            submitTransaction('/api/wallet/withdraw/', 'withdraw-amount', 'withdraw-message');
+        });
+    }
+}

@@ -20,3 +20,7 @@ class HomeView(TemplateView):
 
 class DashboardPageView(TemplateView):
     template_name = "frontend/dashboard.html"
+    
+    
+class WalletPageView(TemplateView):
+    template_name = "frontend/wallet.html"
