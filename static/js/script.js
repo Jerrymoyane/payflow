@@ -238,3 +238,79 @@ if (depositForm) {  // only runs on the wallet page
         });
     }
 }
+
+
+// ---------- PAYMENTS PAGE ----------
+const airtimeForm = document.getElementById('airtime-form');
+if (airtimeForm) {  // only runs on the payments page
+
+    const token = localStorage.getItem('access_token');
+    if (!token) {
+        window.location.href = '/login/';
+    } else {
+
+        // Shared submit helper for all three payment forms
+        async function submitPayment(url, payload, messageBoxId) {
+            const messageBox = document.getElementById(messageBoxId);
+            messageBox.textContent = '';
+            messageBox.className = 'form-message';
+
+            try {
+                const response = await fetch(url, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': 'Bearer ' + token
+                    },
+                    body: JSON.stringify(payload)
+                });
+
+                const result = await response.json();
+
+                if (!response.ok) {
+                    const firstError = result.detail || Object.values(result)[0];
+                    messageBox.textContent = Array.isArray(firstError) ? firstError[0] : firstError;
+                    messageBox.classList.add('form-message-error');
+                    return;
+                }
+
+                messageBox.textContent = 'Success! Reference: ' + result.reference + ' — New balance: ' + result.new_balance;
+                messageBox.classList.add('form-message-success');
+
+            } catch (err) {
+                messageBox.textContent = 'Something went wrong.';
+                messageBox.classList.add('form-message-error');
+            }
+        }
+
+        airtimeForm.addEventListener('submit', function (e) {
+            e.preventDefault();
+            submitPayment('/api/payments/airtime/', {
+                phone_number: document.getElementById('airtime-phone').value,
+                network: document.getElementById('airtime-network').value,
+                amount: document.getElementById('airtime-amount').value
+            }, 'airtime-message');
+        });
+
+        const dataForm = document.getElementById('data-form');
+        dataForm.addEventListener('submit', function (e) {
+            e.preventDefault();
+            submitPayment('/api/payments/data/', {
+                phone_number: document.getElementById('data-phone').value,
+                network: document.getElementById('data-network').value,
+                amount: document.getElementById('data-amount').value
+            }, 'data-message');
+        });
+
+        const electricityForm = document.getElementById('electricity-form');
+        electricityForm.addEventListener('submit', function (e) {
+            e.preventDefault();
+            submitPayment('/api/payments/electricity/', {
+                meter_number: document.getElementById('electricity-meter').value,
+                provider: 'Eskom',  // TEMP: backend currently requires this field - see note below
+                amount: document.getElementById('electricity-amount').value
+            }, 'electricity-message');
+        });
+    }
+}
+

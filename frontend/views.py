@@ -24,3 +24,6 @@ class DashboardPageView(TemplateView):
     
 class WalletPageView(TemplateView):
     template_name = "frontend/wallet.html"
+
+class PaymentsPageView(TemplateView):
+    template_name = "frontend/payments.html"

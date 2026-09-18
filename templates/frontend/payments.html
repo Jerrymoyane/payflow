@@ -1,0 +1,80 @@
+{% extends "frontend/base.html" %}
+
+{% block title %}Payments — PayFlow{% endblock %}
+
+{% block content %}
+<div class="payments-page">
+    <h2>Make a Payment</h2>
+
+    <div class="dashboard-grid">
+        <!-- AIRTIME -->
+        <div class="card">
+            <h3>Buy Airtime</h3>
+            <form id="airtime-form">
+                <div class="form-group">
+                    <label for="airtime-phone">Phone number</label>
+                    <input type="text" id="airtime-phone" required>
+                </div>
+                <div class="form-group">
+                    <label for="airtime-network">Network</label>
+                    <select id="airtime-network" required>
+                        <option value="MTN">MTN</option>
+                        <option value="Vodacom">Vodacom</option>
+                        <option value="Cell C">Cell C</option>
+                        <option value="Telkom">Telkom</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="airtime-amount">Amount (ZAR)</label>
+                    <input type="number" id="airtime-amount" step="0.01" min="0.01" required>
+                </div>
+                <div id="airtime-message" class="form-message"></div>
+                <button type="submit" class="btn btn-primary btn-block">Buy Airtime</button>
+            </form>
+        </div>
+
+        <!-- DATA -->
+        <div class="card">
+            <h3>Buy Data</h3>
+            <form id="data-form">
+                <div class="form-group">
+                    <label for="data-phone">Phone number</label>
+                    <input type="text" id="data-phone" required>
+                </div>
+                <div class="form-group">
+                    <label for="data-network">Network</label>
+                    <select id="data-network" required>
+                        <option value="MTN">MTN</option>
+                        <option value="Vodacom">Vodacom</option>
+                        <option value="Cell C">Cell C</option>
+                        <option value="Telkom">Telkom</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="data-amount">Amount (ZAR)</label>
+                    <input type="number" id="data-amount" step="0.01" min="0.01" required>
+                </div>
+                <div id="data-message" class="form-message"></div>
+                <button type="submit" class="btn btn-primary btn-block">Buy Data</button>
+            </form>
+        </div>
+
+        <!-- ELECTRICITY -->
+        <div class="card">
+            <h3>Pay Electricity</h3>
+            <form id="electricity-form">
+                <div class="form-group">
+                    <label for="electricity-meter">Meter number</label>
+                    <input type="text" id="electricity-meter" required>
+                </div>
+                <div class="form-group">
+                    <label for="electricity-amount">Amount (ZAR)</label>
+                    <input type="number" id="electricity-amount" step="0.01" min="0.01" required>
+                </div>
+                <div id="electricity-message" class="form-message"></div>
+                <button type="submit" class="btn btn-primary btn-block">Pay Electricity</button>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
