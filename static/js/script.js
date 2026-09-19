@@ -1,18 +1,19 @@
 document.addEventListener('DOMContentLoaded', function () {
 
-    const token = localStorage.getItem('access_token');
-
     // ---------- NAVBAR LOGIN STATE ----------
     // Shows Dashboard/Wallet/etc links + Logout if logged in, Login/Register if not
     const navLoggedIn = document.getElementById('nav-loggedin');
     const navLoggedOut = document.getElementById('nav-loggedout');
     const navLogoutAction = document.getElementById('nav-logout-action');
+
     if (token) {
         if (navLoggedIn) navLoggedIn.style.display = 'flex';
         if (navLoggedOut) navLoggedOut.style.display = 'none';
         if (navLogoutAction) navLogoutAction.style.display = 'flex';
     }
+
     const logoutBtn = document.getElementById('logout-btn');
+
     if (logoutBtn) {
         logoutBtn.addEventListener('click', function () {
             localStorage.removeItem('access_token');
@@ -20,117 +21,8 @@ document.addEventListener('DOMContentLoaded', function () {
             window.location.href = '/login/';
         });
     }
-
     // ---------- REGISTER ----------
-    const registerForm = document.getElementById('register-form');
-    if (registerForm) {
-        registerForm.addEventListener('submit', async function (e) {
-            e.preventDefault();
-            const errorBox = document.getElementById('register-error');
-            errorBox.textContent = '';
-
-            const data = {
-                first_name: document.getElementById('first_name').value,
-                last_name: document.getElementById('last_name').value,
-                email: document.getElementById('email').value,
-                phone_number: document.getElementById('phone_number').value,
-                password: document.getElementById('password').value,
-            };
-
-            try {
-                const response = await fetch('/api/auth/register/', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(data),
-                });
-                const result = await response.json();
-                if (!response.ok) {
-                    const firstError = Object.values(result)[0];
-                    errorBox.textContent = Array.isArray(firstError) ? firstError[0] : 'Registration failed.';
-                    return;
-                }
-                window.location.href = '/login/';
-            } catch (err) {
-                errorBox.textContent = 'Something went wrong. Please try again.';
-            }
-        });
-    }
-
-    // ---------- LOGIN ----------
-    const loginForm = document.getElementById('login-form');
-    if (loginForm) {
-        loginForm.addEventListener('submit', async function (e) {
-            e.preventDefault();
-            const errorBox = document.getElementById('login-error');
-            errorBox.textContent = '';
-
-            const data = {
-                email: document.getElementById('email').value,
-                password: document.getElementById('password').value,
-            };
-
-            try {
-                const response = await fetch('/api/auth/login/', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(data),
-                });
-                const result = await response.json();
-                if (!response.ok) {
-                    errorBox.textContent = 'Invalid email or password.';
-                    return;
-                }
-                localStorage.setItem('access_token', result.access);
-                localStorage.setItem('refresh_token', result.refresh);
-                window.location.href = '/dashboard/';
-            } catch (err) {
-                errorBox.textContent = 'Something went wrong. Please try again.';
-            }
-        });
-    }
-
-    // Shared auth-guard helper for every protected page below
-    function requireAuth() {
-        if (!token) {
-            window.location.href = '/login/';
-            return false;
-        }
-        return true;
-    }
-
-    async function apiGet(url) {
-        const response = await fetch(url, {
-            headers: { 'Authorization': 'Bearer ' + token }
-        });
-        if (!response.ok) throw new Error('Request failed: ' + url);
-        return response.json();
-    }
-
-    // Handles both a plain array response AND a paginated {results: [...]} response
-    function extractList(data) {
-        if (Array.isArray(data)) return data;
-        if (data && Array.isArray(data.results)) return data.results;
-        return [];
-    }
-
-    function renderTransactionRows(tbody, transactions) {
-        tbody.innerHTML = '';
-        if (transactions.length === 0) {
-            tbody.innerHTML = '<tr><td colspan="5">No transactions found.</td></tr>';
-            return;
-        }
-        transactions.forEach(txn => {
-            const row = document.createElement('tr');
-            row.innerHTML = `
-                <td>${txn.reference}</td>
-                <td>${txn.type}</td>
-                <td>${txn.amount}</td>
-                <td><span class="badge badge-${txn.status.toLowerCase()}">${txn.status}</span></td>
-                <td>${new Date(txn.created_at).toLocaleDateString()}</td>
-            `;
-            tbody.appendChild(row);
-        });
-    }
+    // ...keep the rest of your existing code here
 
     // ---------- DASHBOARD ----------
     const walletBalanceEl = document.getElementById('wallet-balance');
