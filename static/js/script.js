@@ -314,3 +314,62 @@ if (airtimeForm) {  // only runs on the payments page
     }
 }
 
+// ---------- TRANSACTIONS PAGE ----------
+const fullTransactionsBody = document.getElementById('full-transactions-body');
+if (fullTransactionsBody) {  // only runs on the transactions page
+
+    const token = localStorage.getItem('access_token');
+    if (!token) {
+        window.location.href = '/login/';
+    } else {
+
+        async function loadTransactions() {
+            fullTransactionsBody.innerHTML = '<tr><td colspan="5">Loading...</td></tr>';
+
+            const type = document.getElementById('filter-type').value;
+            const status = document.getElementById('filter-status').value;
+
+            const params = new URLSearchParams();
+            if (type) params.append('type', type);
+            if (status) params.append('status', status);
+
+            const response = await fetch('/api/transactions/?' + params.toString(), {
+                headers: { 'Authorization': 'Bearer ' + token }
+            });
+
+            if (!response.ok) {
+                fullTransactionsBody.innerHTML = '<tr><td colspan="5">Failed to load transactions.</td></tr>';
+                return;
+            }
+
+            const transactions = await response.json();
+            fullTransactionsBody.innerHTML = '';
+
+            if (transactions.length === 0) {
+                fullTransactionsBody.innerHTML = '<tr><td colspan="5">No transactions found.</td></tr>';
+                return;
+            }
+
+            transactions.forEach(txn => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${txn.reference}</td>
+                    <td>${txn.type}</td>
+                    <td>${txn.amount}</td>
+                    <td><span class="badge badge-${txn.status.toLowerCase()}">${txn.status}</span></td>
+                    <td>${new Date(txn.created_at).toLocaleDateString()}</td>
+                `;
+                fullTransactionsBody.appendChild(row);
+            });
+        }
+
+        document.getElementById('filter-apply').addEventListener('click', loadTransactions);
+        document.getElementById('filter-clear').addEventListener('click', function () {
+            document.getElementById('filter-type').value = '';
+            document.getElementById('filter-status').value = '';
+            loadTransactions();
+        });
+
+        loadTransactions();
+    }
+}

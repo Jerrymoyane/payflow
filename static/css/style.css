@@ -295,3 +295,19 @@ body {
 
 .form-message-error { color: #dc2626; }
 .form-message-success { color: #166534; }
+
+
+
+.filters {
+    display: flex;
+    gap: var(--space-2);
+    margin-bottom: var(--space-4);
+    flex-wrap: wrap;
+}
+
+.filters select {
+    padding: var(--space-2);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius);
+    font-size: var(--font-size-base);
+}
