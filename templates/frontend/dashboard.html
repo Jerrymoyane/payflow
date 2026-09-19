@@ -9,10 +9,8 @@
     <div class="dashboard-grid">
         <div class="card">
             <h3>Wallet Balance</h3>
-            <!-- Filled in by JS once the API responds -->
             <p class="balance" id="wallet-balance">Loading...</p>
         </div>
-
         <div class="card">
             <h3>Account</h3>
             <p id="account-email">Loading...</p>
@@ -22,16 +20,9 @@
 
     <div class="card">
         <h3>Recent Transactions</h3>
-        <!-- JS will insert <tr> rows here -->
         <table class="transactions-table">
             <thead>
-                <tr>
-                    <th>Reference</th>
-                    <th>Type</th>
-                    <th>Amount</th>
-                    <th>Status</th>
-                    <th>Date</th>
-                </tr>
+                <tr><th>Reference</th><th>Type</th><th>Amount</th><th>Status</th><th>Date</th></tr>
             </thead>
             <tbody id="transactions-body">
                 <tr><td colspan="5">Loading...</td></tr>

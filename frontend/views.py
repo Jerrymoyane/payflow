@@ -30,3 +30,6 @@ class PaymentsPageView(TemplateView):
     
 class TransactionsPageView(TemplateView):
     template_name = "frontend/transactions.html"
+
+class ProfilePageView(TemplateView):
+    template_name = "frontend/profile.html"

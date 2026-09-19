@@ -1,0 +1,16 @@
+{% extends "frontend/base.html" %}
+
+{% block title %}Profile — PayFlow{% endblock %}
+
+{% block content %}
+<div class="profile-page">
+    <h2>My Profile</h2>
+    <div class="card">
+        <div class="form-group"><label>First name</label><p id="profile-first-name">Loading...</p></div>
+        <div class="form-group"><label>Last name</label><p id="profile-last-name"></p></div>
+        <div class="form-group"><label>Email</label><p id="profile-email"></p></div>
+        <div class="form-group"><label>Phone number</label><p id="profile-phone"></p></div>
+        <div class="form-group"><label>Member since</label><p id="profile-created"></p></div>
+    </div>
+</div>
+{% endblock %}

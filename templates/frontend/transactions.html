@@ -16,27 +16,19 @@
                 <option value="DATA">Data</option>
                 <option value="ELECTRICITY">Electricity</option>
             </select>
-
             <select id="filter-status">
                 <option value="">All Statuses</option>
                 <option value="SUCCESS">Success</option>
                 <option value="PENDING">Pending</option>
                 <option value="FAILED">Failed</option>
             </select>
-
             <button id="filter-apply" class="btn btn-primary">Filter</button>
             <button id="filter-clear" class="btn btn-outline">Clear</button>
         </div>
 
         <table class="transactions-table">
             <thead>
-                <tr>
-                    <th>Reference</th>
-                    <th>Type</th>
-                    <th>Amount</th>
-                    <th>Status</th>
-                    <th>Date</th>
-                </tr>
+                <tr><th>Reference</th><th>Type</th><th>Amount</th><th>Status</th><th>Date</th></tr>
             </thead>
             <tbody id="full-transactions-body">
                 <tr><td colspan="5">Loading...</td></tr>

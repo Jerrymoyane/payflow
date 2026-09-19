@@ -1,18 +1,31 @@
-// This file will hold JavaScript that talks to our Django REST API.
-// For now it's empty - we'll add login/register logic here in the next step,
-// once base.html and home.html are confirmed working.
-console.log("PayFlow frontend loaded.");
-
-
-// This runs after the page's HTML is fully loaded
 document.addEventListener('DOMContentLoaded', function () {
+
+    const token = localStorage.getItem('access_token');
+
+    // ---------- NAVBAR LOGIN STATE ----------
+    // Shows Dashboard/Wallet/etc links + Logout if logged in, Login/Register if not
+    const navLoggedIn = document.getElementById('nav-loggedin');
+    const navLoggedOut = document.getElementById('nav-loggedout');
+    const navLogoutAction = document.getElementById('nav-logout-action');
+    if (token) {
+        if (navLoggedIn) navLoggedIn.style.display = 'flex';
+        if (navLoggedOut) navLoggedOut.style.display = 'none';
+        if (navLogoutAction) navLogoutAction.style.display = 'flex';
+    }
+    const logoutBtn = document.getElementById('logout-btn');
+    if (logoutBtn) {
+        logoutBtn.addEventListener('click', function () {
+            localStorage.removeItem('access_token');
+            localStorage.removeItem('refresh_token');
+            window.location.href = '/login/';
+        });
+    }
 
     // ---------- REGISTER ----------
     const registerForm = document.getElementById('register-form');
     if (registerForm) {
         registerForm.addEventListener('submit', async function (e) {
-            e.preventDefault(); // stop the browser's default full-page form submit
-
+            e.preventDefault();
             const errorBox = document.getElementById('register-error');
             errorBox.textContent = '';
 
@@ -30,19 +43,13 @@ document.addEventListener('DOMContentLoaded', function () {
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(data),
                 });
-
                 const result = await response.json();
-
                 if (!response.ok) {
-                    // DRF errors look like {"email": ["already exists"]} - grab the first message
                     const firstError = Object.values(result)[0];
                     errorBox.textContent = Array.isArray(firstError) ? firstError[0] : 'Registration failed.';
                     return;
                 }
-
-                // Registration succeeded - send them to login
                 window.location.href = '/login/';
-
             } catch (err) {
                 errorBox.textContent = 'Something went wrong. Please try again.';
             }
@@ -54,7 +61,6 @@ document.addEventListener('DOMContentLoaded', function () {
     if (loginForm) {
         loginForm.addEventListener('submit', async function (e) {
             e.preventDefault();
-
             const errorBox = document.getElementById('login-error');
             errorBox.textContent = '';
 
@@ -69,53 +75,66 @@ document.addEventListener('DOMContentLoaded', function () {
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(data),
                 });
-
                 const result = await response.json();
-
                 if (!response.ok) {
                     errorBox.textContent = 'Invalid email or password.';
                     return;
                 }
-
-                // Store both tokens in localStorage so other pages can use them
                 localStorage.setItem('access_token', result.access);
                 localStorage.setItem('refresh_token', result.refresh);
-
-                // Logged in - go to dashboard (we'll build this next)
                 window.location.href = '/dashboard/';
-
             } catch (err) {
                 errorBox.textContent = 'Something went wrong. Please try again.';
             }
         });
     }
 
-});
-
-
-// ---------- DASHBOARD ----------
-const walletBalanceEl = document.getElementById('wallet-balance');
-if (walletBalanceEl) {  // only run this code if we're actually on the dashboard page
-
-    const token = localStorage.getItem('access_token');
-
-    // No token at all? Not logged in - send them to login immediately.
-    if (!token) {
-        window.location.href = '/login/';
-    } else {
-
-        // A small helper so we don't repeat the Authorization header every time
-        async function apiGet(url) {
-            const response = await fetch(url, {
-                headers: { 'Authorization': 'Bearer ' + token }
-            });
-            if (!response.ok) {
-                throw new Error('Request failed: ' + url);
-            }
-            return response.json();
+    // Shared auth-guard helper for every protected page below
+    function requireAuth() {
+        if (!token) {
+            window.location.href = '/login/';
+            return false;
         }
+        return true;
+    }
 
-        // Load profile info
+    async function apiGet(url) {
+        const response = await fetch(url, {
+            headers: { 'Authorization': 'Bearer ' + token }
+        });
+        if (!response.ok) throw new Error('Request failed: ' + url);
+        return response.json();
+    }
+
+    // Handles both a plain array response AND a paginated {results: [...]} response
+    function extractList(data) {
+        if (Array.isArray(data)) return data;
+        if (data && Array.isArray(data.results)) return data.results;
+        return [];
+    }
+
+    function renderTransactionRows(tbody, transactions) {
+        tbody.innerHTML = '';
+        if (transactions.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="5">No transactions found.</td></tr>';
+            return;
+        }
+        transactions.forEach(txn => {
+            const row = document.createElement('tr');
+            row.innerHTML = `
+                <td>${txn.reference}</td>
+                <td>${txn.type}</td>
+                <td>${txn.amount}</td>
+                <td><span class="badge badge-${txn.status.toLowerCase()}">${txn.status}</span></td>
+                <td>${new Date(txn.created_at).toLocaleDateString()}</td>
+            `;
+            tbody.appendChild(row);
+        });
+    }
+
+    // ---------- DASHBOARD ----------
+    const walletBalanceEl = document.getElementById('wallet-balance');
+    if (walletBalanceEl && requireAuth()) {
         apiGet('/api/users/me/')
             .then(user => {
                 document.getElementById('welcome-message').textContent = 'Welcome, ' + user.first_name;
@@ -123,70 +142,29 @@ if (walletBalanceEl) {  // only run this code if we're actually on the dashboard
                 document.getElementById('account-phone').textContent = 'Phone: ' + user.phone_number;
             })
             .catch(() => {
-                // Token likely expired or invalid - send back to login
                 localStorage.removeItem('access_token');
                 window.location.href = '/login/';
             });
 
-        // Load wallet balance
-        apiGet('/api/wallet/')
-            .then(wallet => {
-                walletBalanceEl.textContent = wallet.currency + ' ' + wallet.balance;
-            });
+        apiGet('/api/wallet/').then(wallet => {
+            walletBalanceEl.textContent = wallet.currency + ' ' + wallet.balance;
+        });
 
-        // Load recent transactions
-        apiGet('/api/transactions/')
-            .then(transactions => {
-                const tbody = document.getElementById('transactions-body');
-                tbody.innerHTML = ''; // clear the "Loading..." row
-
-                if (transactions.length === 0) {
-                    tbody.innerHTML = '<tr><td colspan="5">No transactions yet.</td></tr>';
-                    return;
-                }
-
-                // {% for %} in Django templates loops server-side;
-                // here we're doing the same idea but in JavaScript, client-side,
-                // since this data arrives after the page has already loaded.
-                transactions.forEach(txn => {
-                    const row = document.createElement('tr');
-                    row.innerHTML = `
-                        <td>${txn.reference}</td>
-                        <td>${txn.type}</td>
-                        <td>${txn.amount}</td>
-                        <td><span class="badge badge-${txn.status.toLowerCase()}">${txn.status}</span></td>
-                        <td>${new Date(txn.created_at).toLocaleDateString()}</td>
-                    `;
-                    tbody.appendChild(row);
-                });
-            });
+        apiGet('/api/transactions/').then(data => {
+            renderTransactionRows(document.getElementById('transactions-body'), extractList(data));
+        });
     }
-}
 
-
-
-// ---------- WALLET PAGE ----------
-const depositForm = document.getElementById('deposit-form');
-if (depositForm) {  // only runs on the wallet page
-
-    const token = localStorage.getItem('access_token');
-    if (!token) {
-        window.location.href = '/login/';
-    } else {
-
+    // ---------- WALLET PAGE ----------
+    const depositForm = document.getElementById('deposit-form');
+    if (depositForm && requireAuth()) {
         const balanceEl = document.getElementById('wallet-page-balance');
 
-        // Reusable function to fetch and display the current balance
         async function loadBalance() {
-            const response = await fetch('/api/wallet/', {
-                headers: { 'Authorization': 'Bearer ' + token }
-            });
-            const wallet = await response.json();
+            const wallet = await apiGet('/api/wallet/');
             balanceEl.textContent = wallet.currency + ' ' + wallet.balance;
         }
 
-        // Shared function for both deposit and withdraw, since they
-        // work identically apart from the URL they call
         async function submitTransaction(url, amountInputId, messageBoxId) {
             const messageBox = document.getElementById(messageBoxId);
             const amount = document.getElementById(amountInputId).value;
@@ -202,28 +180,22 @@ if (depositForm) {  // only runs on the wallet page
                     },
                     body: JSON.stringify({ amount: amount })
                 });
-
                 const result = await response.json();
-
                 if (!response.ok) {
                     messageBox.textContent = result.detail || 'Transaction failed.';
                     messageBox.classList.add('form-message-error');
                     return;
                 }
-
                 messageBox.textContent = 'Success! Reference: ' + result.reference;
                 messageBox.classList.add('form-message-success');
-
-                document.getElementById(amountInputId).value = '';  // clear the input
-                loadBalance();  // refresh the displayed balance immediately
-
+                document.getElementById(amountInputId).value = '';
+                loadBalance();
             } catch (err) {
                 messageBox.textContent = 'Something went wrong.';
                 messageBox.classList.add('form-message-error');
             }
         }
 
-        // Load the balance as soon as the page opens
         loadBalance();
 
         depositForm.addEventListener('submit', function (e) {
@@ -231,25 +203,16 @@ if (depositForm) {  // only runs on the wallet page
             submitTransaction('/api/wallet/deposit/', 'deposit-amount', 'deposit-message');
         });
 
-        const withdrawForm = document.getElementById('withdraw-form');
-        withdrawForm.addEventListener('submit', function (e) {
+        document.getElementById('withdraw-form').addEventListener('submit', function (e) {
             e.preventDefault();
             submitTransaction('/api/wallet/withdraw/', 'withdraw-amount', 'withdraw-message');
         });
     }
-}
 
+    // ---------- PAYMENTS PAGE ----------
+    const airtimeForm = document.getElementById('airtime-form');
+    if (airtimeForm && requireAuth()) {
 
-// ---------- PAYMENTS PAGE ----------
-const airtimeForm = document.getElementById('airtime-form');
-if (airtimeForm) {  // only runs on the payments page
-
-    const token = localStorage.getItem('access_token');
-    if (!token) {
-        window.location.href = '/login/';
-    } else {
-
-        // Shared submit helper for all three payment forms
         async function submitPayment(url, payload, messageBoxId) {
             const messageBox = document.getElementById(messageBoxId);
             messageBox.textContent = '';
@@ -264,19 +227,15 @@ if (airtimeForm) {  // only runs on the payments page
                     },
                     body: JSON.stringify(payload)
                 });
-
                 const result = await response.json();
-
                 if (!response.ok) {
                     const firstError = result.detail || Object.values(result)[0];
                     messageBox.textContent = Array.isArray(firstError) ? firstError[0] : firstError;
                     messageBox.classList.add('form-message-error');
                     return;
                 }
-
                 messageBox.textContent = 'Success! Reference: ' + result.reference + ' — New balance: ' + result.new_balance;
                 messageBox.classList.add('form-message-success');
-
             } catch (err) {
                 messageBox.textContent = 'Something went wrong.';
                 messageBox.classList.add('form-message-error');
@@ -292,8 +251,7 @@ if (airtimeForm) {  // only runs on the payments page
             }, 'airtime-message');
         });
 
-        const dataForm = document.getElementById('data-form');
-        dataForm.addEventListener('submit', function (e) {
+        document.getElementById('data-form').addEventListener('submit', function (e) {
             e.preventDefault();
             submitPayment('/api/payments/data/', {
                 phone_number: document.getElementById('data-phone').value,
@@ -302,65 +260,35 @@ if (airtimeForm) {  // only runs on the payments page
             }, 'data-message');
         });
 
-        const electricityForm = document.getElementById('electricity-form');
-        electricityForm.addEventListener('submit', function (e) {
+        document.getElementById('electricity-form').addEventListener('submit', function (e) {
             e.preventDefault();
             submitPayment('/api/payments/electricity/', {
                 meter_number: document.getElementById('electricity-meter').value,
-                provider: 'Eskom',  // TEMP: backend currently requires this field - see note below
+                provider: 'Eskom',
                 amount: document.getElementById('electricity-amount').value
             }, 'electricity-message');
         });
     }
-}
 
-// ---------- TRANSACTIONS PAGE ----------
-const fullTransactionsBody = document.getElementById('full-transactions-body');
-if (fullTransactionsBody) {  // only runs on the transactions page
-
-    const token = localStorage.getItem('access_token');
-    if (!token) {
-        window.location.href = '/login/';
-    } else {
+    // ---------- TRANSACTIONS PAGE ----------
+    const fullTransactionsBody = document.getElementById('full-transactions-body');
+    if (fullTransactionsBody && requireAuth()) {
 
         async function loadTransactions() {
             fullTransactionsBody.innerHTML = '<tr><td colspan="5">Loading...</td></tr>';
 
             const type = document.getElementById('filter-type').value;
             const status = document.getElementById('filter-status').value;
-
             const params = new URLSearchParams();
             if (type) params.append('type', type);
             if (status) params.append('status', status);
 
-            const response = await fetch('/api/transactions/?' + params.toString(), {
-                headers: { 'Authorization': 'Bearer ' + token }
-            });
-
-            if (!response.ok) {
+            try {
+                const data = await apiGet('/api/transactions/?' + params.toString());
+                renderTransactionRows(fullTransactionsBody, extractList(data));
+            } catch (err) {
                 fullTransactionsBody.innerHTML = '<tr><td colspan="5">Failed to load transactions.</td></tr>';
-                return;
             }
-
-            const transactions = await response.json();
-            fullTransactionsBody.innerHTML = '';
-
-            if (transactions.length === 0) {
-                fullTransactionsBody.innerHTML = '<tr><td colspan="5">No transactions found.</td></tr>';
-                return;
-            }
-
-            transactions.forEach(txn => {
-                const row = document.createElement('tr');
-                row.innerHTML = `
-                    <td>${txn.reference}</td>
-                    <td>${txn.type}</td>
-                    <td>${txn.amount}</td>
-                    <td><span class="badge badge-${txn.status.toLowerCase()}">${txn.status}</span></td>
-                    <td>${new Date(txn.created_at).toLocaleDateString()}</td>
-                `;
-                fullTransactionsBody.appendChild(row);
-            });
         }
 
         document.getElementById('filter-apply').addEventListener('click', loadTransactions);
@@ -372,4 +300,20 @@ if (fullTransactionsBody) {  // only runs on the transactions page
 
         loadTransactions();
     }
-}
+
+    // ---------- PROFILE PAGE ----------
+    const profileFirstName = document.getElementById('profile-first-name');
+    if (profileFirstName && requireAuth()) {
+        apiGet('/api/users/me/').then(user => {
+            document.getElementById('profile-first-name').textContent = user.first_name;
+            document.getElementById('profile-last-name').textContent = user.last_name;
+            document.getElementById('profile-email').textContent = user.email;
+            document.getElementById('profile-phone').textContent = user.phone_number;
+            document.getElementById('profile-created').textContent = new Date(user.created_at).toLocaleDateString();
+        }).catch(() => {
+            localStorage.removeItem('access_token');
+            window.location.href = '/login/';
+        });
+    }
+
+});
