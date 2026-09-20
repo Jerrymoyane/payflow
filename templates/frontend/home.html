@@ -3,27 +3,345 @@
 {% block title %}PayFlow — Simulated Digital Payments{% endblock %}
 
 {% block content %}
-<section class="hero">
-    <h1>Simple, simulated digital payments.</h1>
-    <p>Register, top up your wallet, and pay for airtime, data and electricity — all in one place.</p>
-    <div class="hero-actions">
-        <a href="{% url 'register' %}" class="btn btn-primary btn-lg">Get Started</a>
-        <a href="{% url 'login' %}" class="btn btn-outline btn-lg">Login</a>
-    </div>
-</section>
+<div class="landing-page">
 
-<section class="features">
-    <div class="feature-card">
-        <h3>Digital Wallet</h3>
-        <p>Add simulated funds and track your balance in real time.</p>
-    </div>
-    <div class="feature-card">
-        <h3>Instant Payments</h3>
-        <p>Buy airtime, mobile data, and pay electricity bills.</p>
-    </div>
-    <div class="feature-card">
-        <h3>Full History</h3>
-        <p>Every transaction is recorded with a unique reference.</p>
-    </div>
-</section>
+    <!-- 1. HERO SECTION -->
+    <section class="landing-hero">
+        <div class="landing-container landing-hero-grid">
+            <div class="landing-hero-content">
+                <span class="landing-badge">Simulated Digital Payments</span>
+                <h1 class="landing-hero-title">Payments made simple.</h1>
+                <p class="landing-hero-desc">
+                    Experience a complete digital wallet workflow in a safe, simulated environment. 
+                    Top up your balance, purchase airtime and data bundles, and settle utility bills seamlessly.
+                </p>
+                <div class="landing-hero-actions">
+                    <a href="{% url 'register' %}" class="btn btn-primary btn-lg">Get Started</a>
+                    <a href="{% url 'login' %}" class="btn btn-outline btn-lg">Login</a>
+                </div>
+            </div>
+
+            <div class="landing-hero-visual">
+                <div class="fintech-card">
+                    <div class="fintech-card-header">
+                        <span class="fintech-card-brand">PayFlow</span>
+                        <span class="fintech-card-type">Digital Wallet</span>
+                    </div>
+                    <div class="fintech-card-chip" aria-hidden="true"></div>
+                    <div class="fintech-card-balance">
+                        <span class="fintech-card-label">Available Balance</span>
+                        <div class="fintech-card-amount">R 2,450.00</div>
+                    </div>
+                    <div class="fintech-card-footer">
+                        <span class="fintech-card-number">&bull;&bull;&bull;&bull; &bull;&bull;&bull;&bull; &bull;&bull;&bull;&bull; 4821</span>
+                        <span class="fintech-card-badge">Simulated</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 2. TRUST / VALUE STRIP -->
+    <section class="landing-trust-strip">
+        <div class="landing-container landing-trust-grid">
+            <div class="trust-item">
+                <span class="trust-icon" aria-hidden="true">&#9670;</span>
+                <div class="trust-text">
+                    <strong>Digital Wallet</strong>
+                    <span>Instant virtual balance</span>
+                </div>
+            </div>
+            <div class="trust-item">
+                <span class="trust-icon" aria-hidden="true">&#8646;</span>
+                <div class="trust-text">
+                    <strong>Simulated Payments</strong>
+                    <span>Zero financial risk</span>
+                </div>
+            </div>
+            <div class="trust-item">
+                <span class="trust-icon" aria-hidden="true">&#9776;</span>
+                <div class="trust-text">
+                    <strong>Transaction Tracking</strong>
+                    <span>Real-time ledger</span>
+                </div>
+            </div>
+            <div class="trust-item">
+                <span class="trust-icon" aria-hidden="true">&#10003;</span>
+                <div class="trust-text">
+                    <strong>Simple &amp; Secure</strong>
+                    <span>Authenticated access</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 3. FEATURES SECTION -->
+    <section class="landing-section">
+        <div class="landing-container">
+            <div class="section-header">
+                <span class="section-eyebrow">Capabilities</span>
+                <h2 class="section-title">Everything you need to manage simulated payments</h2>
+                <p class="section-desc">Designed to demonstrate standard modern fintech workflows with an intuitive user experience.</p>
+            </div>
+
+            <div class="features-grid">
+                <div class="landing-card feature-box">
+                    <div class="feature-icon" aria-hidden="true">&#9830;</div>
+                    <h3>Digital Wallet</h3>
+                    <p>Add simulated funds and keep track of your available balance in real time.</p>
+                </div>
+
+                <div class="landing-card feature-box">
+                    <div class="feature-icon" aria-hidden="true">&#9742;</div>
+                    <h3>Airtime &amp; Data</h3>
+                    <p>Purchase simulated airtime and mobile data across major networks from one place.</p>
+                </div>
+
+                <div class="landing-card feature-box">
+                    <div class="feature-icon" aria-hidden="true">&#9889;</div>
+                    <h3>Electricity Payments</h3>
+                    <p>Make simulated electricity token purchases quickly, reliably, and easily.</p>
+                </div>
+
+                <div class="landing-card feature-box">
+                    <div class="feature-icon" aria-hidden="true">&#128392;</div>
+                    <h3>Transaction History</h3>
+                    <p>Keep a clear, chronological record of every payment and wallet deposit.</p>
+                </div>
+
+                <div class="landing-card feature-box">
+                    <div class="feature-icon" aria-hidden="true">&#9881;</div>
+                    <h3>User Profile</h3>
+                    <p>Manage personal details and account configurations from your dedicated profile.</p>
+                </div>
+
+                <div class="landing-card feature-box">
+                    <div class="feature-icon" aria-hidden="true">&#128274;</div>
+                    <h3>Secure Authentication</h3>
+                    <p>Use token-based authenticated access to keep your account area protected.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 4. HOW IT WORKS -->
+    <section class="landing-section landing-section-alt">
+        <div class="landing-container">
+            <div class="section-header">
+                <span class="section-eyebrow">Simple Workflow</span>
+                <h2 class="section-title">How PayFlow works</h2>
+                <p class="section-desc">Get started in three direct steps.</p>
+            </div>
+
+            <div class="steps-grid">
+                <div class="step-card">
+                    <div class="step-number">01</div>
+                    <h3>Create your account</h3>
+                    <p>Register for your personal PayFlow account with your email and password.</p>
+                </div>
+
+                <div class="step-card">
+                    <div class="step-number">02</div>
+                    <h3>Fund your wallet</h3>
+                    <p>Top up your digital balance with simulated funds whenever needed.</p>
+                </div>
+
+                <div class="step-card">
+                    <div class="step-number">03</div>
+                    <h3>Make a payment</h3>
+                    <p>Use your wallet balance to simulate airtime, data, and electricity transactions.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 5. PAYMENT SERVICES -->
+    <section class="landing-section">
+        <div class="landing-container">
+            <div class="section-header">
+                <span class="section-eyebrow">Services</span>
+                <h2 class="section-title">Supported payment categories</h2>
+                <p class="section-desc">Experience utility and airtime procurement as you would in a production billing environment.</p>
+            </div>
+
+            <div class="services-grid">
+                <div class="landing-card service-card">
+                    <div class="service-pill">Telephony</div>
+                    <h3>Airtime</h3>
+                    <p>Simulate prepaid airtime vouchers for voice calls and SMS.</p>
+                    <ul class="service-points">
+                        <li>Instant balance deduction</li>
+                        <li>Automated transaction reference</li>
+                    </ul>
+                </div>
+
+                <div class="landing-card service-card">
+                    <div class="service-pill">Connectivity</div>
+                    <h3>Mobile Data</h3>
+                    <p>Simulated high-speed mobile data bundles from standard tiers.</p>
+                    <ul class="service-points">
+                        <li>Flexible bundle sizes</li>
+                        <li>Immediate status confirmation</li>
+                    </ul>
+                </div>
+
+                <div class="landing-card service-card">
+                    <div class="service-pill">Utilities</div>
+                    <h3>Electricity</h3>
+                    <p>Simulated prepaid municipal electricity tokens with unique reference codes.</p>
+                    <ul class="service-points">
+                        <li>Simulated meter validation</li>
+                        <li>Token generation logging</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 6. WALLET / TRANSACTION VISUAL -->
+    <section class="landing-section landing-section-alt">
+        <div class="landing-container showcase-grid">
+            <div class="showcase-content">
+                <span class="section-eyebrow">Activity &amp; Auditing</span>
+                <h2 class="section-title">Know where your money goes.</h2>
+                <p class="section-desc">
+                    Every transaction generates an immutable simulated ledger record. 
+                    Review past expenditures, verify service references, and monitor top-up credits at any time.
+                </p>
+                <div class="showcase-metrics">
+                    <div class="metric-item">
+                        <span class="metric-value">100%</span>
+                        <span class="metric-label">Simulated sandbox</span>
+                    </div>
+                    <div class="metric-item">
+                        <span class="metric-value">0ms</span>
+                        <span class="metric-label">Payment latency</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="showcase-visual">
+                <div class="ledger-card">
+                    <div class="ledger-header">
+                        <span class="ledger-title">Recent Transactions</span>
+                        <span class="ledger-filter">Simulated Feed</span>
+                    </div>
+                    <div class="ledger-list">
+                        <div class="ledger-row">
+                            <div class="ledger-meta">
+                                <span class="ledger-item-title">Airtime</span>
+                                <span class="ledger-item-sub">MTN &bull; Airtime Recharge</span>
+                            </div>
+                            <span class="ledger-amount debit">-R50.00</span>
+                        </div>
+                        <div class="ledger-row">
+                            <div class="ledger-meta">
+                                <span class="ledger-item-title">Wallet Deposit</span>
+                                <span class="ledger-item-sub">Wallet &bull; Account Top-up</span>
+                            </div>
+                            <span class="ledger-amount credit">+R500.00</span>
+                        </div>
+                        <div class="ledger-row">
+                            <div class="ledger-meta">
+                                <span class="ledger-item-title">Electricity</span>
+                                <span class="ledger-item-sub">Utilities &bull; Prepaid Meter</span>
+                            </div>
+                            <span class="ledger-amount debit">-R250.00</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 7. SECURITY / TRUST SECTION -->
+    <section class="landing-section">
+        <div class="landing-container">
+            <div class="security-card">
+                <div class="security-header">
+                    <span class="section-eyebrow">Architecture &amp; Ethics</span>
+                    <h2 class="section-title">Built with authentication and transaction tracking in mind.</h2>
+                    <p class="section-desc">
+                        PayFlow is designed strictly as an educational and demonstration platform. 
+                        No actual banking networks or real funds are connected.
+                    </p>
+                </div>
+                <div class="security-pillars">
+                    <div class="pillar">
+                        <h4>Authenticated Access</h4>
+                        <p>User sessions are isolated and secured with token credentials.</p>
+                    </div>
+                    <div class="pillar">
+                        <h4>Transaction References</h4>
+                        <p>All operations are tagged with persistent reference identifiers.</p>
+                    </div>
+                    <div class="pillar">
+                        <h4>Wallet Tracking</h4>
+                        <p>Simulated balances are balanced against credits and debits.</p>
+                    </div>
+                    <div class="pillar">
+                        <h4>Clear Payment Records</h4>
+                        <p>Transparent auditing for every test purchase across all service lines.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 8. FINAL CTA -->
+    <section class="landing-cta-section">
+        <div class="landing-container">
+            <div class="cta-inner">
+                <h2>Ready to explore PayFlow?</h2>
+                <p>Create your account and experience a simple simulated digital payment workflow in minutes.</p>
+                <div class="cta-buttons">
+                    <a href="{% url 'register' %}" class="btn btn-primary btn-lg">Get Started</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 9. PROFESSIONAL FOOTER -->
+    <footer class="landing-footer">
+        <div class="landing-container landing-footer-grid">
+            <div class="footer-brand">
+                <span class="footer-logo">PayFlow</span>
+                <p class="footer-text">Simple, simulated digital payments for learning and demonstration.</p>
+                <span class="footer-badge">Demo Project</span>
+            </div>
+
+            <div class="footer-column">
+                <h4>Product</h4>
+                <ul>
+                    <li><a href="#">Wallet</a></li>
+                    <li><a href="#">Payments</a></li>
+                    <li><a href="#">Transactions</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-column">
+                <h4>Account</h4>
+                <ul>
+                    <li><a href="{% url 'login' %}">Login</a></li>
+                    <li><a href="{% url 'register' %}">Register</a></li>
+                    <li><a href="#">Profile</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-column">
+                <h4>PayFlow</h4>
+                <ul>
+                    <li><a href="#">About</a></li>
+                    <li><a href="#">Security</a></li>
+                    <li><a href="#">Contact</a></li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="landing-container footer-bottom">
+            <p>&copy; 2026 PayFlow. Built for demonstration purposes.</p>
+        </div>
+    </footer>
+
+</div>
 {% endblock %}

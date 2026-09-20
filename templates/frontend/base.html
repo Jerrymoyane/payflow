@@ -1,23 +1,42 @@
-<nav class="navbar">
-    <div class="navbar-container">
-        <a href="{% url 'home' %}" class="navbar-brand">PayFlow</a>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}PayFlow{% endblock %}</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<body>
 
-        <!-- Logged-in nav links - JS shows/hides these based on login state -->
-        <div class="navbar-links" id="nav-loggedin" style="display:none;">
-            <a href="{% url 'dashboard' %}">Dashboard</a>
-            <a href="{% url 'wallet' %}">Wallet</a>
-            <a href="{% url 'payments' %}">Payments</a>
-            <a href="{% url 'transactions' %}">Transactions</a>
-            <a href="{% url 'profile' %}">Profile</a>
-        </div>
+    <nav class="navbar">
+        <div class="navbar-container">
+            <a href="{% url 'home' %}" class="navbar-brand">PayFlow</a>
 
-        <div class="navbar-actions" id="nav-loggedout">
-            <a href="{% url 'login' %}" class="btn btn-outline">Login</a>
-            <a href="{% url 'register' %}" class="btn btn-primary">Register</a>
-        </div>
+            <!-- Logged-in nav links - JS shows/hides these based on login state -->
+            <div class="navbar-links" id="nav-loggedin" style="display:none;">
+                <a href="{% url 'dashboard' %}">Dashboard</a>
+                <a href="{% url 'wallet' %}">Wallet</a>
+                <a href="{% url 'payments' %}">Payments</a>
+                <a href="{% url 'transactions' %}">Transactions</a>
+                <a href="{% url 'profile' %}">Profile</a>
+            </div>
 
-        <div class="navbar-actions" id="nav-logout-action" style="display:none;">
-            <button id="logout-btn" class="btn btn-outline">Logout</button>
+            <div class="navbar-actions" id="nav-loggedout">
+                <a href="{% url 'login' %}" class="btn btn-outline">Login</a>
+                <a href="{% url 'register' %}" class="btn btn-primary">Register</a>
+            </div>
+
+            <div class="navbar-actions" id="nav-logout-action" style="display:none;">
+                <button id="logout-btn" class="btn btn-outline">Logout</button>
+            </div>
         </div>
-    </div>
-</nav>
+    </nav>
+
+    <main class="container">
+        {% block content %}{% endblock %}
+    </main>
+
+    <script src="{% static 'js/script.js' %}"></script>
+</body>
+</html>
